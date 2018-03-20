@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>guaGame</title>
+        <style media="screen">
+            canvas {
+                border: 1px solid;
+            }
+        </style>
+        <!-- gua game 相关文件 -->
+        <script src="guagame/gua_game.js"></script>
+        <script src="guagame/gua_scene.js"></script>
+        <script src="guagame/gua_image.js"></script>
+        <script src="guagame/gua_label.js"></script>
+        <script src="guagame/gua_particle_system.js"></script>
+        <script src="guagame/gua_animation.js"></script>
+        <script src="guagame/gua_grounds.js"></script>
+        <script src="guagame/utils.js"></script>
+        <!-- 场景文件 -->
+        <script src="scene/main/bullet.js"></script>
+        <script src="scene/main/cloud.js"></script>
+        <script src="scene/main/enemy.js"></script>
+        <script src="scene/main/player.js"></script>
+        <script src="scene/main/scene.js"></script>
+        <!-- 标题和结束场景 -->
+        <script src="scene/title/scene_title.js"></script>
+        <script src="scene/end/scene_end.js"></script>
+        <!-- 配置数据 -->
+        <script src="config.js"></script>
+    </head>
+    <body>
+        <canvas id="id-canvas" width="400" height="600"></canvas>
+        <hr>
+        <input id="id-input-speed" type="range" value="1">
+        <!-- <div class="">
+            <textarea id="id-text-log" rows="20" cols="50"></textarea>
+        </div> -->
+        <div class="gua-controls">
+
+        </div>
+        <script src="main.js"></script>
+        <script>
+            var es = sel => document.querySelectorAll(sel)
+
+            var bindAll = (sel, eventname, callback) => {
+                var l = es(sel)
+                for (var i = 0; i < l.length; i++) {
+                    var input = l[i]
+                    input.addEventListener(eventname, (event)=>{
+                        callback(event)
+                    })
+                }
+            }
+
+            var templateControl = (key, item) => {
+                var i = item
+                var t = `
+                    <label>
+                        <input class="gua-auto-slide" type="range"
+                            max="300"
+                            value="${item.value}"
+                            data-value="config.${key}"
+                        >
+                        ${item._comment}: <span class="gua-label"></span>
+                    </label>
+                `
+                return t
+            }
+
+            var insertControls = () => {
+                var div = e('.gua-controls')
+                var keys = Object.keys(config)
+                for (var k of keys) {
+                    var item = config[k]
+                    var html = templateControl(k, item)
+                    div.insertAdjacentHTML('beforeend', html)
+                }
+            }
+
+            var bindEvents = () => {
+                bindAll('.gua-auto-slide', 'input', (event)=>{
+                    var target = event.target
+                    var bindValue = target.dataset.value
+                    var v = target.value
+                    // 设置 bindValue 的值为 v
+                    eval(bindValue + '.value =' + v)
+                    //
+                    var label = target.closest('label').querySelector('.gua-label')
+                    label.innerText = v
+                })
+            }
+
+            var __main = () => {
+                // 从配置文件生成 HTML 控件
+                insertControls()
+                // 绑定事件
+                bindEvents()
+            }
+
+             __main()
+        </script>
+    </body>
+</html>
